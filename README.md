@@ -1,8 +1,3 @@
-
-# Project Title
-
-A brief description of what this project does and who it's for
-
 # ATM Cash-Out Prediction ML Project
 1. **Problem Understanding & Data Collection**
 The goal is to predict whether an ATM will run out of cash based on past transaction patterns.
