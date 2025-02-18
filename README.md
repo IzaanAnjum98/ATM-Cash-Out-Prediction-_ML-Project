@@ -1,4 +1,47 @@
-# ATM-Cash-Out-Prediction_ML-Project
+
+# Project Title
+
+A brief description of what this project does and who it's for
+
+# ATM Cash-Out Prediction ML Project
+1. **Problem Understanding & Data Collection**
+The goal is to predict whether an ATM will run out of cash based on past transaction patterns.
+
+**Data includes:**
+* ATM ID, Date, Withdrawal & Deposit Amounts, Total Cash, Transaction Count, and Day of the Week.
+
+* Target variable (Cash_Out): 1 if the ATM’s remaining cash is below 20K, else 0.
+
+2. **Exploratory Data Analysis (EDA)**
+Load the dataset and check for missing values, outliers, and distributions.
+
+* Visualize: Cash-out trends over time.
+* Daily transaction patterns (e.g., weekends vs. weekdays).
+* High withdrawal times affecting cash-out.
+
+3.**Feature Engineering**
+
+* Extract useful time-based features (e.g., day of the month, holidays).
+* Create rolling averages for transaction patterns.
+* Convert categorical features (e.g., Day_of_Week) into numerical format.
+
+4. **Train-Test Split & Data Preprocessing**
+* Split the dataset into training **(80%)** and testing **(20%)** sets.
+* Normalize numerical features for better model performance.
+
+5. **Model Selection & Training**
+* Try different models:
+    *   Logistic Regression (Baseline)
+    * Random Forest (Better generalization) 
+    * XGBoost (Best for imbalanced data)
+* Use cross-validation to fine-tune hyperparameters.
+
+6. **Model Evaluation**
+*   Use metrics:
+    * Accuracy, Precision, Recall, F1-score (for classification).
+    * Confusion Matrix to check false positives/negatives.
+    * ROC-AUC Curve for model performance.
+
 
 import pandas as pd
 import numpy as np
@@ -9,50 +52,4 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-# Step 1: Load Dataset
-df = pd.read_csv("atm_cashout_data.csv")
 
-# Step 2: Data Preprocessing
-# Convert Date to datetime format
-df["Date"] = pd.to_datetime(df["Date"])
-
-# Encode categorical variable (Day_of_Week)
-label_encoder = LabelEncoder()
-df["Day_of_Week"] = label_encoder.fit_transform(df["Day_of_Week"])
-
-# Select features and target variable
-features = ["Total_Cash", "Withdrawal_Amount", "Deposit_Amount", "Transaction_Count", "Day_of_Week"]
-target = "Cash_Out"
-
-X = df[features]
-y = df[target]
-
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Normalize numerical features
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
-
-# Step 3: Train Machine Learning Model
-model = RandomForestClassifier(n_estimators=100, random_state=42)
-model.fit(X_train, y_train)
-
-# Step 4: Model Evaluation
-y_pred = model.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
-print(f"Model Accuracy: {accuracy:.2f}")
-print("\nClassification Report:\n", classification_report(y_test, y_pred))
-
-# Step 5: Confusion Matrix
-plt.figure(figsize=(6, 4))
-sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="Blues", xticklabels=["No Cash-Out", "Cash-Out"], yticklabels=["No Cash-Out", "Cash-Out"])
-plt.xlabel("Predicted")
-plt.ylabel("Actual")
-plt.title("Confusion Matrix")
-plt.show()
-
-# Save model (optional)
-import joblib
-joblib.dump(model, "atm_cashout_model.pkl")
